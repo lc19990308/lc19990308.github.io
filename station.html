@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d16">
+  <meta name="description" content="LewChaw 的前端驿站：一个可拖拽旋转的 Three.js 三维个人主页入口。">
+  <title>LewChaw 前端驿站</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./station.css">
+  <script type="module" src="./station.js"></script>
+</head>
+<body>
+  <main class="station-shell" aria-label="LewChaw 的前端驿站三维场景">
+    <canvas id="station-canvas" tabindex="0" aria-label="可拖拽、缩放的三维驿站场景"></canvas>
+    <div class="station-fallback" id="station-fallback" aria-hidden="true">
+      <div class="fallback-orbit"></div>
+      <div class="fallback-card">
+        <span>LC FIELD STATION</span>
+        <strong>Vue · Three.js · IoT · AI</strong>
+        <p>静态驿站画面已启用</p>
+      </div>
+    </div>
+    <div class="scene-label scene-label-top">SIGNAL STATION / ZHENGZHOU</div>
+    <div class="scene-label scene-label-bottom">DRAG TO ORBIT · WHEEL TO ZOOM · DOUBLE CLICK TO FOCUS</div>
+  </main>
+</body>
+</html>

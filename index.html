@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070a12">
+  <meta name="description" content="LewChaw 的个人主页：前端工程、跨平台应用、IoT 与 AI 应用落地。">
+  <meta property="og:title" content="LewChaw | Frontend Signal Station">
+  <meta property="og:description" content="一座连接项目、写作与真实工程经验的前端驿站。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lc19990308.github.io/">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>LewChaw | Frontend Signal Station</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./sections.css">
+  <link rel="stylesheet" href="./responsive.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <dialog id="station-gateway" class="station-gateway" aria-labelledby="station-title" aria-describedby="station-subtitle">
+    <div class="station-frame">
+      <div class="station-scene" aria-busy="true"></div>
+      <div class="station-vignette" aria-hidden="true"></div>
+
+      <div class="station-topline">
+        <span>LC / FIELD STATION</span>
+        <button class="station-close" type="button" data-close-station aria-label="关闭驿站，进入主页">×</button>
+      </div>
+
+      <div class="station-intro">
+        <p class="station-kicker">FRONTEND · IOT · AI · VISUALIZATION</p>
+        <h2 id="station-title">欢迎来到<br><em>LewChaw 的前端驿站。</em></h2>
+        <p id="station-subtitle">把真实项目、技术笔记和工程判断，<br>收进一座可以停靠的信号站。</p>
+        <button class="station-enter" type="button" data-close-station>
+          进入主页
+          <span aria-hidden="true">↗</span>
+        </button>
+      </div>
+
+      <div class="station-bottomline">
+        <span>郑州 · 在线</span>
+        <span class="station-status" role="status">正在点亮驿站…</span>
+        <span>ESC 进入主页</span>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="page-shell" id="top">
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="回到首页">
+        <span class="brand-mark">LC</span>
+        <span class="brand-copy">
+          <strong>LewChaw</strong>
+          <small>FRONTEND SIGNAL STATION</small>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="主导航">
+        <button class="station-launch" type="button" data-open-station aria-haspopup="dialog" aria-controls="station-gateway" aria-expanded="false">
+          <span aria-hidden="true">◇</span> 驿站漫游
+        </button>
+        <a href="#projects">Projects</a>
+        <a href="#writing">Writing</a>
+        <a href="#stack">Stack</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="header-meta" aria-label="当前状态">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>OPEN TO WORK</span>
+        <span>ZHENGZHOU / UTC+08</span>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero-section" aria-labelledby="hero-title">
+        <div class="hero-copy" data-reveal>
+          <p class="eyebrow">SIGNAL 001 / FRONTEND ENGINEER</p>
+          <h1 id="hero-title">把复杂业务<br><em>做成可运行的界面。</em></h1>
+          <p class="hero-summary">我是 LewChaw，6 年前端开发工程师。长期处理桌面中后台、移动跨平台、IoT 通信与 AI 应用落地，擅长把零散接口、硬件协议和真实业务流程连接成稳定产品。</p>
+
+          <div class="hero-actions" aria-label="主要入口">
+            <a class="button button-primary" href="#projects">查看精选项目 <span aria-hidden="true">↓</span></a>
+            <a class="button button-secondary" href="https://lc19990308.github.io/web-blog/" target="_blank" rel="noreferrer">技术博客 <span aria-hidden="true">↗</span></a>
+            <a class="button button-ghost" href="https://github.com/lc19990308" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+          </div>
+
+          <dl class="hero-facts" aria-label="个人概览">
+            <div>
+              <dt>YEARS</dt>
+              <dd>6+</dd>
+            </div>
+            <div>
+              <dt>PROJECTS</dt>
+              <dd>15+</dd>
+            </div>
+            <div>
+              <dt>SKILLS</dt>
+              <dd>48</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="signal-panel" data-reveal>
+          <div class="signal-panel-header">
+            <span>CAPABILITY NETWORK</span>
+            <span>LIVE CANVAS</span>
+          </div>
+          <div class="network-wrap">
+            <canvas id="signal-network" aria-label="由 Vue、TypeScript、Three.js、IoT 和 AI 等能力节点组成的动态网络图"></canvas>
+            <div class="network-fallback">Vue · TypeScript · Three.js · IoT · AI · WebRTC</div>
+          </div>
+          <div class="signal-readout">
+            <span>CORE LOOP</span>
+            <strong>Connect → Build → Measure → Ship</strong>
+            <p>画布中的节点来自真实项目里持续使用的技术能力。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="signal-strip" aria-label="当前关注">
+        <div class="signal-cell" data-reveal>
+          <span>CURRENT FOCUS</span>
+          <strong>AI-native 前端工作流</strong>
+          <p>Claude Code / MCP / Agent 编排 / 工程化提效</p>
+        </div>
+        <div class="signal-cell" data-reveal>
+          <span>PRIMARY MODE</span>
+          <strong>从真实问题出发</strong>
+          <p>先做能跑的系统，再把经验沉淀为可复用方法</p>
+        </div>
+        <div class="signal-cell" data-reveal>
+          <span>OPEN CHANNEL</span>
+          <strong>合作与技术交流</strong>
+          <p><span data-email-text data-email-user="jarridaddison4" data-email-domain="gmail.com">邮箱地址已启用脚本保护</span></p>
+        </div>
+      </section>
+
+      <section class="section-block" id="projects" aria-labelledby="projects-title">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">SELECTED WORK / 002</p>
+          <h2 id="projects-title">六个代表项目</h2>
+          <p>不罗列全部经历，只保留能说明技术广度、工程复杂度和交付结果的项目。</p>
+        </div>
+
+        <div class="project-grid">
+          <a class="project-card project-card-large" href="https://lc19990308.github.io/portfolio/" target="_blank" rel="noreferrer" data-reveal>
+            <span class="project-index">01</span>
+            <div class="project-content">
+              <div class="project-title-line">
+                <h3>金融情报分析中台</h3>
+                <span class="project-state">FULL STACK</span>
+              </div>
+              <p>独立完成 Vue 3 大屏、FastAPI 后端与 uni-app 移动端，聚合 9 类资产数据源，44 个接口支撑 30 个可配置分析组件。</p>
+              <div class="tag-list" aria-label="技术栈">
+                <span>Vue 3</span><span>FastAPI</span><span>ECharts</span><span>Monorepo</span>
+              </div>
+            </div>
+            <span class="project-metric">44 APIs</span>
+          </a>
+
+          <a class="project-card" href="https://lc19990308.github.io/portfolio/" target="_blank" rel="noreferrer" data-reveal>
+            <span class="project-index">02</span>
+            <div class="project-content">
+              <div class="project-title-line">
+                <h3>YS 投研金融数据平台</h3>
+                <span class="project-state">AI READY</span>
+              </div>
+              <p>整合 17 个业务领域与 185+ API，封装统一数据层，并通过 SSE 接入流式 AI 问答。</p>
+              <div class="tag-list"><span>Vue 3</span><span>Vue Query</span><span>SSE</span><span>ECharts 6</span></div>
+            </div>
+            <span class="project-metric">185+ APIs</span>
+          </a>
+
+          <a class="project-card" href="https://lc19990308.github.io/portfolio/" target="_blank" rel="noreferrer" data-reveal>
+            <span class="project-index">03</span>
+            <div class="project-content">
+              <div class="project-title-line">
+                <h3>MBSE 数据接口测试平台</h3>
+                <span class="project-state">INDUSTRIAL</span>
+              </div>
+              <p>面向航空航天与汽车仿真测试，打通接口定义、AI 用例生成、异步执行、实时监控与报告导出。</p>
+              <div class="tag-list"><span>TypeScript</span><span>WebSocket</span><span>CATIA</span><span>OpenModelica</span></div>
+            </div>
+            <span class="project-metric">12 Modules</span>
+          </a>
+
+          <a class="project-card" href="https://lc19990308.github.io/portfolio/" target="_blank" rel="noreferrer" data-reveal>
+            <span class="project-index">04</span>
+            <div class="project-content">
+              <div class="project-title-line">
+                <h3>船舶软件供应链攻防演练系统</h3>
+                <span class="project-state">DELIVERED</span>
+              </div>
+              <p>基于 Vben Admin 二开，覆盖 AOD/AWD、SBOM、态势大屏与复盘报告，3.5 周完成 88 个接口对接。</p>
+              <div class="tag-list"><span>Vue 3</span><span>Ant Design Vue</span><span>SBOM</span><span>Mock.js</span></div>
+            </div>
+            <span class="project-metric">3.5 Weeks</span>
+          </a>
+
+          <a class="project-card" href="https://lc19990308.github.io/portfolio/" target="_blank" rel="noreferrer" data-reveal>
+            <span class="project-index">05</span>
+            <div class="project-content">
+              <div class="project-title-line">
+                <h3>星源 CRM 移动端</h3>
+                <span class="project-state">PUBLISHED</span>
+              </div>
+              <p>MQTT 长连接推送任务，Android 无障碍服务自动拨号、录音与上报，日均处理能力从百通提升到千通。</p>
+              <div class="tag-list"><span>uni-app</span><span>MQTT</span><span>Android</span><span>离线同步</span></div>
+            </div>
+            <span class="project-metric">10× Efficiency</span>
+          </a>
+
+          <a class="project-card" href="https://lc19990308.github.io/portfolio/" target="_blank" rel="noreferrer" data-reveal>
+            <span class="project-index">06</span>
+            <div class="project-content">
+              <div class="project-title-line">
+                <h3>OSS 开源组件安全治理平台</h3>
+                <span class="project-state">SECURITY</span>
+              </div>
+              <p>从二进制扫描到 CVE 匹配、许可证合规与依赖图谱，使用 AntV G6 呈现 5 层以上传递依赖。</p>
+              <div class="tag-list"><span>Vue 2</span><span>AntV G6</span><span>CVE</span><span>双网关</span></div>
+            </div>
+            <span class="project-metric">17 Modules</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="section-block writing-section" id="writing" aria-labelledby="writing-title">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">FIELD NOTES / 003</p>
+          <h2 id="writing-title">项目之外，持续沉淀</h2>
+          <p>主页负责展示结果，博客负责记录过程：遇到的问题、做过的判断和可复用的方法。</p>
+        </div>
+
+        <div class="writing-grid">
+          <a class="writing-card" href="https://lc19990308.github.io/web-blog/" target="_blank" rel="noreferrer" data-reveal>
+            <span class="writing-label">BLOG</span>
+            <h3>前端技术笔记</h3>
+            <p>围绕前端工程、AI Agent 与真实项目判断展开的研究记录，按问题而不是热度组织。</p>
+            <span class="writing-link">进入笔记索引 <span aria-hidden="true">↗</span></span>
+          </a>
+          <a class="writing-card" href="https://lc19990308.github.io/portfolio/" target="_blank" rel="noreferrer" data-reveal>
+            <span class="writing-label">PORTFOLIO</span>
+            <h3>完整项目简历</h3>
+            <p>查看完整项目经历、职业时间线、技能清单，以及可下载的 PDF 简历。</p>
+            <span class="writing-link">打开完整简历 <span aria-hidden="true">↗</span></span>
+          </a>
+        </div>
+      </section>
+
+      <section class="section-block stack-section" id="stack" aria-labelledby="stack-title">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">CAPABILITY MAP / 004</p>
+          <h2 id="stack-title">能力不是标签，是连接方式</h2>
+          <p>从浏览器到移动端，从可视化到硬件协议，真正有价值的是把它们连成闭环。</p>
+        </div>
+
+        <div class="capability-grid">
+          <article class="capability-card" data-reveal>
+            <span>01 / CORE</span>
+            <h3>前端工程</h3>
+            <p>Vue 2/3、TypeScript、Vite、Pinia/Vuex、组件化与大型中后台架构。</p>
+            <div class="tag-list"><span>Vue</span><span>TypeScript</span><span>Vite</span></div>
+          </article>
+          <article class="capability-card" data-reveal>
+            <span>02 / VISUAL</span>
+            <h3>数据可视化</h3>
+            <p>ECharts、AntV G2/G6、Three.js 与 GIS，把复杂数据变成可读界面。</p>
+            <div class="tag-list"><span>ECharts</span><span>AntV</span><span>Three.js</span></div>
+          </article>
+          <article class="capability-card" data-reveal>
+            <span>03 / REALTIME</span>
+            <h3>通信与硬件</h3>
+            <p>MQTT、SSE、WebSocket、WebRTC、BLE、NFC 与浏览器内实时链路。</p>
+            <div class="tag-list"><span>MQTT</span><span>WebRTC</span><span>BLE</span></div>
+          </article>
+          <article class="capability-card" data-reveal>
+            <span>04 / AI</span>
+            <h3>AI 应用落地</h3>
+            <p>Claude Code、MCP、Skill、Agent 编排与流式对话体验的工程化集成。</p>
+            <div class="tag-list"><span>MCP</span><span>Agent</span><span>SSE</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="journey-section" aria-labelledby="journey-title">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">ROUTE / 005</p>
+          <h2 id="journey-title">六年路线</h2>
+        </div>
+        <ol class="timeline">
+          <li data-reveal>
+            <span>2020 — 2023</span>
+            <strong>河南九嘉信息技术有限公司</strong>
+            <p>Three.js 3D 可视化、智慧农业 IoT、BLE 硬件生态与多款 App 上架。</p>
+          </li>
+          <li data-reveal>
+            <span>2023 — 2024</span>
+            <strong>河南力天大数据有限公司</strong>
+            <p>WebRTC 视频流、电力需求响应系统，主导前端 Code Review。</p>
+          </li>
+          <li data-reveal>
+            <span>2024 — 至今</span>
+            <strong>北京元启汇能科技有限公司</strong>
+            <p>金融数据、安全治理、工业测试、呼叫中心等多个项目从 0 到 1 搭建。</p>
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="contact">
+      <div class="footer-heading" data-reveal>
+        <p class="eyebrow">CONTACT / 006</p>
+        <h2>有合适的项目或机会，欢迎联系。</h2>
+      </div>
+      <div class="contact-grid" data-reveal>
+        <a href="#contact" data-email-link data-email-user="jarridaddison4" data-email-domain="gmail.com">发送邮件 <span aria-hidden="true">↗</span></a>
+        <a href="https://github.com/lc19990308" target="_blank" rel="noreferrer">github.com/lc19990308 <span aria-hidden="true">↗</span></a>
+        <a href="https://lc19990308.github.io/portfolio/resume.pdf" target="_blank" rel="noreferrer">下载 PDF 简历 <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="current-year">2026</span> LewChaw</span>
+        <span>FRONTEND SIGNAL STATION / V1.0</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
