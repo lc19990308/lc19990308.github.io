@@ -6,10 +6,10 @@ const fallbackTitle = document.querySelector('.fallback-card strong')
 
 const palette = {
   bg: 0x080d16,
-  platform: 0x111827,
-  platformEdge: 0x263449,
-  building: 0x182236,
-  roof: 0x263449,
+  platform: 0x141c2c,
+  platformEdge: 0x334155,
+  building: 0x202b3f,
+  roof: 0x334155,
   glass: 0x7dd3fc,
   cyan: 0x7dd3fc,
   amber: 0xf59e0b,
@@ -152,13 +152,75 @@ function createStationConsole(station) {
   consoleGroup.add(label)
 }
 
+function createStationFrames(station) {
+  const frameMaterial = makeStandard(0x7c8da8, { metalness: 0.45, roughness: 0.36 })
+  ;[-2.08, 2.08].forEach(x => {
+    ;[-1.22, 1.22].forEach(z => {
+      addMesh(station, new THREE.CylinderGeometry(0.055, 0.055, 2.05, 12), frameMaterial, [x, 1.05, z])
+    })
+  })
+  ;[-1.9, -0.68, 0.68, 1.9].forEach(x => {
+    addMesh(station, new THREE.BoxGeometry(0.055, 1.68, 0.08), frameMaterial, [x, 0.96, 1.36])
+  })
+  addMesh(station, new THREE.BoxGeometry(4.24, 0.07, 0.09), frameMaterial, [0, 1.82, 1.36])
+  addMesh(station, new THREE.BoxGeometry(4.24, 0.07, 0.09), frameMaterial, [0, 0.16, 1.36])
+  addMesh(station, new THREE.BoxGeometry(0.09, 1.62, 2.34), frameMaterial, [2.12, 0.95, 0])
+  addMesh(station, new THREE.BoxGeometry(0.06, 1.38, 1.7), makeStandard(palette.glass, { transparent: true, opacity: 0.2, emissive: palette.cyan, emissiveIntensity: 0.08 }), [2.14, 0.92, 0])
+  addMesh(station, new THREE.BoxGeometry(1.05, 0.08, 0.42), makeGlow(palette.amber, 0.28), [1.35, 0.08, 1.58])
+}
+
+function createStationInterior(station) {
+  addMesh(station, new THREE.BoxGeometry(1.35, 0.12, 0.48), makeStandard(0x111827), [-0.82, 0.58, 0.35])
+  addMesh(station, new THREE.BoxGeometry(0.48, 0.32, 0.04), makeGlow(0x38bdf8, 0.58), [-1.18, 0.86, 0.22], [-0.12, 0.2, 0])
+  addMesh(station, new THREE.BoxGeometry(0.48, 0.32, 0.04), makeGlow(0xf59e0b, 0.5), [-0.52, 0.86, 0.24], [-0.12, -0.16, 0])
+  addMesh(station, new THREE.BoxGeometry(0.42, 0.86, 0.34), makeStandard(0x0d1320), [1.55, 0.68, -0.65])
+  for (let index = 0; index < 5; index += 1) {
+    addMesh(station, new THREE.BoxGeometry(0.32, 0.045, 0.03), makeGlow(index % 2 ? palette.cyan : palette.green, 0.68), [1.55, 0.4 + index * 0.13, -0.46])
+  }
+  addMesh(station, new THREE.BoxGeometry(2.6, 0.05, 0.08), makeGlow(palette.cyan, 0.42), [-0.3, 1.72, 0.35])
+  addMesh(station, new THREE.CylinderGeometry(0.2, 0.24, 0.08, 18), makeStandard(0x263449), [-0.15, 0.42, 0.82])
+  addMesh(station, new THREE.CylinderGeometry(0.04, 0.04, 0.42, 10), makeStandard(0x64748b), [-0.15, 0.22, 0.82])
+}
+
+function createRoofDetails(station) {
+  const solarMaterial = makeStandard(0x0f2d4a, { metalness: 0.32, roughness: 0.24, emissive: 0x082f49, emissiveIntensity: 0.18 })
+  ;[-1.05, 0.35].forEach(x => {
+    addMesh(station, new THREE.BoxGeometry(1.12, 0.045, 0.72), solarMaterial, [x, 2.27, -0.42], [0, 0, -0.04])
+    addMesh(station, new THREE.BoxGeometry(1.02, 0.012, 0.025), makeGlow(palette.cyan, 0.36), [x, 2.3, -0.42])
+  })
+  addMesh(station, new THREE.BoxGeometry(0.62, 0.32, 0.48), makeStandard(0x475569), [1.45, 2.34, -0.52])
+  addMesh(station, new THREE.CylinderGeometry(0.13, 0.13, 0.16, 18), makeStandard(0x94a3b8), [1.45, 2.58, -0.52])
+  addMesh(station, new THREE.CylinderGeometry(0.025, 0.025, 0.72, 8), makeStandard(0x94a3b8), [-1.9, 2.56, -0.72])
+  addMesh(station, new THREE.SphereGeometry(0.08, 12, 8), makeGlow(palette.amber, 0.86), [-1.9, 2.96, -0.72])
+}
+
 function createStationPerson(station) {
   const person = new THREE.Group()
-  person.position.set(1.6, 0.08, 2.12)
+  person.position.set(1.58, 0.08, 2.18)
+  person.rotation.y = -0.18
+  person.scale.set(1.12, 1.12, 1.12)
   station.add(person)
-  addMesh(person, new THREE.CapsuleGeometry(0.16, 0.48, 6, 12), makeStandard(0x263449), [0, 0.66, 0])
-  addMesh(person, new THREE.SphereGeometry(0.18, 18, 14), makeStandard(0xd6a77a), [0, 1.12, 0])
-  addMesh(person, new THREE.BoxGeometry(0.52, 0.08, 0.08), makeGlow(palette.cyan, 0.62), [0, 0.96, 0.1])
+
+  const cloth = makeStandard(0x24324a, { roughness: 0.72 })
+  const denim = makeStandard(0x172033, { roughness: 0.78 })
+  const skin = makeStandard(0xd6a77a, { roughness: 0.52 })
+  addMesh(person, new THREE.CapsuleGeometry(0.18, 0.5, 8, 16), cloth, [0, 0.72, 0])
+  addMesh(person, new THREE.CylinderGeometry(0.07, 0.08, 0.12, 12), skin, [0, 1.05, 0])
+  addMesh(person, new THREE.SphereGeometry(0.19, 24, 18), skin, [0, 1.2, 0])
+  const hair = addMesh(person, new THREE.SphereGeometry(0.195, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), makeStandard(0x111827), [0, 1.24, 0], [0.08, 0, 0])
+  hair.scale.set(1.02, 0.72, 1.02)
+  addMesh(person, new THREE.CapsuleGeometry(0.045, 0.34, 6, 10), cloth, [-0.22, 0.74, 0.02], [0.1, 0, 0.34])
+  addMesh(person, new THREE.CapsuleGeometry(0.045, 0.34, 6, 10), cloth, [0.22, 0.76, 0.08], [0.72, 0, -0.42])
+  addMesh(person, new THREE.SphereGeometry(0.055, 12, 10), skin, [-0.3, 0.55, 0.04])
+  addMesh(person, new THREE.SphereGeometry(0.055, 12, 10), skin, [0.3, 0.62, 0.22])
+  addMesh(person, new THREE.CapsuleGeometry(0.055, 0.42, 6, 10), denim, [-0.09, 0.28, 0], [0.05, 0, 0.05])
+  addMesh(person, new THREE.CapsuleGeometry(0.055, 0.42, 6, 10), denim, [0.09, 0.28, 0], [-0.04, 0, -0.05])
+  addMesh(person, new THREE.BoxGeometry(0.16, 0.07, 0.26), makeStandard(0x0b101c), [-0.1, 0.04, 0.05])
+  addMesh(person, new THREE.BoxGeometry(0.16, 0.07, 0.26), makeStandard(0x0b101c), [0.1, 0.04, 0.05])
+  addMesh(person, new THREE.BoxGeometry(0.28, 0.42, 0.1), makeStandard(0x3f2f23), [0, 0.82, -0.16])
+  addMesh(person, new THREE.BoxGeometry(0.06, 0.38, 0.03), makeGlow(palette.amber, 0.42), [-0.12, 0.84, 0.16])
+  addMesh(person, new THREE.BoxGeometry(0.06, 0.38, 0.03), makeGlow(palette.amber, 0.42), [0.12, 0.84, 0.16])
+  addMesh(person, new THREE.BoxGeometry(0.13, 0.2, 0.025), makeGlow(palette.cyan, 0.78), [0.32, 0.64, 0.25], [0.35, 0.08, -0.2])
 }
 
 function createStation(world) {
@@ -166,6 +228,9 @@ function createStation(world) {
   station.position.set(-1.15, 0.1, 0.05)
   world.add(station)
   createStationShell(station)
+  createStationFrames(station)
+  createStationInterior(station)
+  createRoofDetails(station)
   addMesh(station, new THREE.BoxGeometry(3.6, 0.06, 0.05), makeGlow(palette.cyan, 0.48), [0, 1.74, 1.36])
   addMesh(station, new THREE.BoxGeometry(0.08, 0.74, 0.08), makeGlow(palette.amber, 0.64), [-1.9, 1.16, 1.38])
   addMesh(station, new THREE.BoxGeometry(0.08, 0.74, 0.08), makeGlow(palette.amber, 0.64), [1.9, 1.16, 1.38])
@@ -203,6 +268,99 @@ function createPortals(world) {
     createPortal(group, label, subtitle, color, index)
   })
   return portals
+}
+
+function addLine(parent, points, color = palette.cyan, opacity = 0.36) {
+  const geometry = new THREE.BufferGeometry().setFromPoints(points)
+  const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity })
+  const line = new THREE.Line(geometry, material)
+  parent.add(line)
+  return line
+}
+
+function createRoadAndCrosswalk(world) {
+  const road = new THREE.Group()
+  world.add(road)
+  addMesh(road, new THREE.BoxGeometry(10.1, 0.055, 1.06), makeStandard(0x0a0f1a, { roughness: 0.86 }), [0, 0.05, 2.78])
+  addMesh(road, new THREE.BoxGeometry(10.2, 0.08, 0.08), makeStandard(0x475569), [0, 0.1, 2.2])
+  addMesh(road, new THREE.BoxGeometry(10.2, 0.08, 0.08), makeStandard(0x475569), [0, 0.1, 3.34])
+  for (let index = 0; index < 7; index += 1) {
+    addMesh(road, new THREE.BoxGeometry(0.34, 0.018, 0.72), makeGlow(0xcbd5e1, 0.34), [-4.05 + index * 0.48, 0.12, 2.78])
+  }
+  for (let index = 0; index < 5; index += 1) {
+    addMesh(road, new THREE.BoxGeometry(0.5, 0.018, 0.045), makeGlow(palette.amber, 0.42), [1.3 + index * 0.82, 0.12, 2.78])
+  }
+  return road
+}
+
+function createStreetFurniture(world) {
+  const furniture = new THREE.Group()
+  world.add(furniture)
+  const metal = makeStandard(0x64748b, { metalness: 0.5, roughness: 0.32 })
+  addMesh(furniture, new THREE.CylinderGeometry(0.045, 0.06, 2.2, 12), metal, [4.62, 1.1, 2.46])
+  addMesh(furniture, new THREE.BoxGeometry(0.72, 0.06, 0.06), metal, [4.3, 2.18, 2.46], [0, 0, -0.18])
+  addMesh(furniture, new THREE.SphereGeometry(0.13, 16, 12), makeGlow(0xffe0a3, 0.92), [3.94, 2.1, 2.46])
+  addMesh(furniture, new THREE.CylinderGeometry(0.04, 0.055, 1.9, 12), metal, [-4.45, 0.95, 2.5])
+  addMesh(furniture, new THREE.BoxGeometry(0.22, 0.58, 0.16), makeStandard(0x111827), [-4.45, 1.72, 2.5])
+  ;[0xff6b6b, 0xfbbf24, 0x34d399].forEach((color, index) => {
+    addMesh(furniture, new THREE.SphereGeometry(0.055, 12, 8), makeGlow(color, index === 2 ? 0.9 : 0.34), [-4.45, 1.9 - index * 0.18, 2.59])
+  })
+  addMesh(furniture, new THREE.BoxGeometry(1.15, 0.12, 0.32), makeStandard(0x8b5a2b), [-0.7, 0.34, 2.24])
+  addMesh(furniture, new THREE.BoxGeometry(0.08, 0.34, 0.08), metal, [-1.13, 0.17, 2.24])
+  addMesh(furniture, new THREE.BoxGeometry(0.08, 0.34, 0.08), metal, [-0.27, 0.17, 2.24])
+  ;[-3.2, 2.55].forEach(x => {
+    addMesh(furniture, new THREE.BoxGeometry(0.52, 0.28, 0.32), makeStandard(0x334155), [x, 0.2, 2.14])
+    addMesh(furniture, new THREE.ConeGeometry(0.18, 0.42, 8), makeStandard(0x2f6f4f), [x - 0.12, 0.55, 2.14])
+    addMesh(furniture, new THREE.ConeGeometry(0.14, 0.34, 8), makeStandard(0x3f8f62), [x + 0.14, 0.5, 2.16])
+  })
+  return furniture
+}
+
+function createBike(world) {
+  const bike = new THREE.Group()
+  bike.position.set(3.1, 0.12, 2.1)
+  bike.rotation.y = -0.18
+  world.add(bike)
+  const rubber = makeStandard(0x0b101c, { roughness: 0.8 })
+  const frame = makeGlow(palette.cyan, 0.62)
+  ;[-0.36, 0.36].forEach(x => addMesh(bike, new THREE.TorusGeometry(0.28, 0.025, 10, 36), rubber, [x, 0.3, 0]))
+  addMesh(bike, new THREE.BoxGeometry(0.68, 0.035, 0.035), frame, [0, 0.45, 0], [0, 0, 0.24])
+  addMesh(bike, new THREE.BoxGeometry(0.52, 0.035, 0.035), frame, [-0.12, 0.58, 0], [0, 0, -0.68])
+  addMesh(bike, new THREE.BoxGeometry(0.48, 0.035, 0.035), frame, [0.16, 0.58, 0], [0, 0, 0.72])
+  addMesh(bike, new THREE.BoxGeometry(0.08, 0.42, 0.04), frame, [0.38, 0.52, 0], [0, 0, -0.12])
+  addMesh(bike, new THREE.BoxGeometry(0.32, 0.04, 0.04), frame, [0.42, 0.76, 0])
+  addMesh(bike, new THREE.BoxGeometry(0.22, 0.045, 0.12), makeStandard(0x111827), [-0.12, 0.75, 0])
+  return bike
+}
+
+function createEnvironment(world) {
+  const environment = new THREE.Group()
+  world.add(environment)
+  createRoadAndCrosswalk(environment)
+  createStreetFurniture(environment)
+  createBike(environment)
+  return environment
+}
+
+function createSkyline(scene) {
+  const skyline = new THREE.Group()
+  skyline.position.set(0, -0.4, -8.8)
+  scene.add(skyline)
+  for (let index = 0; index < 13; index += 1) {
+    const height = 0.8 + ((index * 37) % 5) * 0.34
+    const building = addMesh(skyline, new THREE.BoxGeometry(0.72, height, 0.32), makeStandard(0x101827, { roughness: 0.9 }), [-6 + index, height / 2, 0])
+    building.castShadow = false
+  }
+  addMesh(skyline, new THREE.BoxGeometry(13.6, 0.08, 0.08), makeGlow(0x64748b, 0.24), [0, 1.22, 0.08])
+  ;[-3.8, 3.8].forEach(x => {
+    addLine(skyline, [new THREE.Vector3(x - 0.48, 0.1, 0.08), new THREE.Vector3(x, 3.2, 0.08), new THREE.Vector3(x + 0.48, 0.1, 0.08)], palette.cyan, 0.3)
+    for (let cable = -4; cable <= 4; cable += 1) {
+      addLine(skyline, [new THREE.Vector3(x, 2.9, 0.08), new THREE.Vector3(x + cable * 0.62, 1.22, 0.08)], palette.cyan, 0.16)
+    }
+  })
+  const sun = addMesh(skyline, new THREE.SphereGeometry(0.68, 32, 20), makeGlow(0xf59e0b, 0.36), [5.5, 3.4, -1.4])
+  sun.castShadow = false
+  return skyline
 }
 
 function createAntenna(world) {
@@ -264,6 +422,9 @@ function addLights(scene) {
   const amberLight = new THREE.PointLight(palette.amber, 7, 10)
   amberLight.position.set(-3.8, 2.8, 3.1)
   scene.add(amberLight)
+  const personLight = new THREE.PointLight(0xffd7a3, 3.8, 4.8)
+  personLight.position.set(0.5, 1.9, 3.6)
+  scene.add(personLight)
 }
 
 function buildWorld(scene) {
@@ -274,6 +435,7 @@ function buildWorld(scene) {
     island: createIsland(world),
     station: createStation(world),
     portals: createPortals(world),
+    environment: createEnvironment(world),
     antenna: createAntenna(world),
     orbitGroup: createDataOrbit(world),
     stars: createStars(scene),
@@ -288,7 +450,8 @@ function createSceneContext() {
   addLights(scene)
   const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100)
   const rig = { target: new THREE.Vector3(0, 0.82, 0), theta: -0.72, phi: 1.04, radius: 10.8 }
-  return { renderer, scene, camera, rig, ...buildWorld(scene) }
+  const skyline = createSkyline(scene)
+  return { renderer, scene, camera, rig, skyline, ...buildWorld(scene) }
 }
 
 function updateCamera(context) {
