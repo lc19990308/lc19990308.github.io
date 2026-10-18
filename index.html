@@ -109,17 +109,24 @@
 
         <div class="signal-panel" data-reveal>
           <div class="signal-panel-header">
-            <span>CAPABILITY NETWORK</span>
-            <span>LIVE CANVAS</span>
+            <span id="network-mode-badge">01 / CAPABILITY TOPOLOGY</span>
+            <span class="live-tag">3D REALTIME</span>
           </div>
           <div class="network-wrap">
-            <canvas id="signal-network" aria-label="由 Vue、TypeScript、Three.js、IoT 和 AI 等能力节点组成的动态网络图"></canvas>
+            <canvas id="signal-network" aria-label="由 Vue、TypeScript、Three.js、IoT 和 AI 等能力节点组成的三维动态拓扑图"></canvas>
             <div class="network-fallback">Vue · TypeScript · Three.js · IoT · AI · WebRTC</div>
           </div>
+          <div class="network-controls" role="group" aria-label="切换 3D 视图">
+            <button type="button" class="network-tab active" data-view="topology" aria-pressed="true"><span>01</span> 能力星云</button>
+            <button type="button" class="network-tab" data-view="architecture" aria-pressed="false"><span>02</span> 分层架构</button>
+            <button type="button" class="network-tab" data-view="twin" aria-pressed="false"><span>03</span> IoT 孪生</button>
+          </div>
           <div class="signal-readout">
-            <span>CORE LOOP</span>
-            <strong>Connect → Build → Measure → Ship</strong>
-            <p>画布中的节点来自真实项目里持续使用的技术能力。</p>
+            <div class="readout-row">
+              <span id="readout-label">CORE LOOP</span>
+              <strong id="readout-title">Vue 3 · Three.js · AI · IoT</strong>
+            </div>
+            <p id="readout-desc">立体空间中的节点映射真实业务中持续演进的核心技术资产。</p>
           </div>
         </div>
       </section>

@@ -1,10 +1,12 @@
 :root {
   color-scheme: dark;
-  --bg: #080d16;
-  --text: #f4f7fb;
-  --muted: #8794aa;
-  --cyan: #7dd3fc;
-  --amber: #f59e0b;
+  --bg: #090a0f;
+  --bg-gradient: radial-gradient(circle at 50% 35%, #181b26 0%, #0c0e14 60%, #06070a 100%);
+  --text: #f1f5f9;
+  --text-muted: #64748b;
+  --accent-cyan: #38bdf8;
+  --accent-indigo: #818cf8;
+  --border-glass: rgba(255, 255, 255, 0.08);
 }
 
 * {
@@ -19,7 +21,9 @@ body {
   overflow: hidden;
   background: var(--bg);
   color: var(--text);
-  font-family: "Noto Sans SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .station-shell {
@@ -27,10 +31,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 68% 28%, rgba(125, 211, 252, 0.16), transparent 28rem),
-    radial-gradient(circle at 34% 68%, rgba(245, 158, 11, 0.13), transparent 28rem),
-    #080d16;
+  background: var(--bg-gradient);
 }
 
 #station-canvas {
@@ -52,9 +53,10 @@ body {
   display: grid;
   place-items: center;
   background:
-    linear-gradient(rgba(125, 211, 252, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(125, 211, 252, 0.055) 1px, transparent 1px);
-  background-size: 54px 54px;
+    radial-gradient(circle at center, rgba(56, 189, 248, 0.03) 0%, transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 48px 48px, 48px 48px;
 }
 
 .scene-ready .station-fallback {
@@ -63,77 +65,81 @@ body {
 
 .fallback-orbit {
   position: absolute;
-  width: min(52vmin, 520px);
-  height: min(52vmin, 520px);
-  border: 1px solid rgba(125, 211, 252, 0.24);
+  width: min(50vmin, 440px);
+  height: min(50vmin, 440px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 50%;
-  box-shadow:
-    0 0 80px rgba(125, 211, 252, 0.12),
-    inset 0 0 80px rgba(245, 158, 11, 0.08);
-}
-
-.fallback-orbit::before,
-.fallback-orbit::after {
-  position: absolute;
-  content: "";
-  border-radius: 50%;
+  box-shadow: 0 0 100px rgba(56, 189, 248, 0.05);
 }
 
 .fallback-orbit::before {
-  inset: 18%;
-  border: 1px dashed rgba(245, 158, 11, 0.34);
-}
-
-.fallback-orbit::after {
-  top: 12%;
-  left: 50%;
-  width: 12px;
-  height: 12px;
-  background: var(--cyan);
-  box-shadow: 0 0 28px rgba(125, 211, 252, 0.8);
+  content: "";
+  position: absolute;
+  inset: 22%;
+  border: 1px dashed rgba(129, 140, 248, 0.2);
+  border-radius: 50%;
 }
 
 .fallback-card {
   position: relative;
   z-index: 1;
-  width: min(420px, calc(100% - 48px));
-  padding: 28px;
+  width: min(400px, calc(100% - 48px));
+  padding: 32px 28px;
   text-align: center;
-  background: rgba(8, 13, 22, 0.76);
-  border: 1px solid rgba(125, 211, 252, 0.24);
-  border-radius: 24px;
-  backdrop-filter: blur(18px);
+  background: rgba(18, 20, 28, 0.72);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .fallback-card span,
 .scene-label {
-  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
   font-size: 0.7rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .fallback-card span {
-  color: var(--amber);
+  color: var(--accent-cyan);
 }
 
 .fallback-card strong {
   display: block;
-  margin-top: 14px;
-  font-size: clamp(1.4rem, 4vw, 2.4rem);
-  letter-spacing: -0.05em;
+  margin-top: 12px;
+  font-size: clamp(1.3rem, 3.8vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: #fff;
 }
 
 .fallback-card p {
-  margin: 12px 0 0;
-  color: var(--muted);
+  margin: 10px 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
 .scene-label {
   position: absolute;
   z-index: 2;
-  color: rgba(244, 247, 251, 0.54);
+  color: rgba(255, 255, 255, 0.45);
   pointer-events: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scene-label::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 8px var(--accent-cyan);
 }
 
 .scene-label-top {

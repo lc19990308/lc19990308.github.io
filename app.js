@@ -176,6 +176,58 @@ function initEmailLinks() {
   })
 }
 
+const NETWORK_MODES = {
+  topology: {
+    badge: '01 / CAPABILITY TOPOLOGY',
+    label: 'CORE CAPABILITY',
+    title: 'Vue 3 · Three.js · AI · IoT',
+    desc: '立体空间中的节点映射真实业务中持续演进的核心技术资产，全向流光连通。',
+  },
+  architecture: {
+    badge: '02 / LAYERED ARCHITECTURE',
+    label: 'SYSTEM STACK',
+    title: 'Presentation → Bridge → Model',
+    desc: '界面渲染层、业务状态流、IoT 硬件通信网关与 AI 智能体分层解耦。',
+  },
+  twin: {
+    badge: '03 / IOT DIGITAL TWIN',
+    label: 'TELEMETRY TWIN',
+    title: 'Sensor Grid → Edge → Cloud',
+    desc: '面向农业物联与设备监控的实时数字孪生中枢，支持高并发空间数据遥测。',
+  },
+}
+
+function initNetworkControls(networkInstance) {
+  const tabs = [...document.querySelectorAll('.network-tab')]
+  if (!tabs.length || !networkInstance) return
+
+  const badgeEl = document.querySelector('#network-mode-badge')
+  const labelEl = document.querySelector('#readout-label')
+  const titleEl = document.querySelector('#readout-title')
+  const descEl = document.querySelector('#readout-desc')
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const view = tab.dataset.view
+      if (!view || !NETWORK_MODES[view]) return
+
+      tabs.forEach(t => {
+        const isActive = t === tab
+        t.classList.toggle('active', isActive)
+        t.setAttribute('aria-pressed', String(isActive))
+      })
+
+      const info = NETWORK_MODES[view]
+      if (badgeEl) badgeEl.textContent = info.badge
+      if (labelEl) labelEl.textContent = info.label
+      if (titleEl) titleEl.textContent = info.title
+      if (descEl) descEl.textContent = info.desc
+
+      networkInstance.select(view)
+    })
+  })
+}
+
 const canvas = document.querySelector('#signal-network')
 const network = canvas ? createSignalNetwork(canvas, { motionQuery }) : null
 const gateway = initStationGateway({
@@ -184,6 +236,7 @@ const gateway = initStationGateway({
   },
 })
 
+initNetworkControls(network)
 if (!gateway.isOpen()) network?.start()
 window.addEventListener('pagehide', event => {
   if (!event.persisted) network?.destroy()
