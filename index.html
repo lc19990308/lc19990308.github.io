@@ -26,6 +26,7 @@
   <dialog id="station-gateway" class="station-gateway" aria-labelledby="station-title" aria-describedby="station-subtitle">
     <div class="station-frame">
       <div class="station-scene" aria-busy="true"></div>
+      <div class="station-loading" aria-hidden="true"><span class="station-loading-ring"></span><span class="station-loading-scan"></span></div>
       <div class="station-vignette" aria-hidden="true"></div>
 
       <div class="station-topline">
@@ -44,9 +45,19 @@
       </div>
 
       <div class="station-bottomline">
-        <span>郑州 · 在线</span>
-        <span class="station-status" role="status">正在点亮驿站…</span>
-        <span>ESC 进入主页</span>
+        <span class="station-meta">
+          <span class="station-loc">ZHENGZHOU</span>
+          <span class="station-online"><span class="station-online-dot" aria-hidden="true"></span>ONLINE</span>
+        </span>
+        <span class="station-status" role="status" aria-live="polite">
+          <span class="station-status-message">正在点亮驿站…</span>
+          <span class="station-controls" aria-label="场景操作提示" hidden>
+            <svg viewBox="0 0 32 32" role="img" aria-label="拖动旋转"><path d="M16 4v24M4 16h24M16 4l-3 4m3-4 3 4M16 28l-3-4m3 4 3-4M4 16l4-3m-4 3 4 3m20-3-4-3m4 3-4 3"/><circle cx="16" cy="16" r="4"/></svg>
+            <svg viewBox="0 0 32 32" role="img" aria-label="滚轮缩放"><rect x="9" y="3.5" width="14" height="25" rx="7"/><path d="M16 8v7m-3-4 3-3 3 3M12 21h8m-8 0 3-3m-3 3 3 3m5-3-3-3m3 3-3 3"/></svg>
+            <svg viewBox="0 0 32 32" role="img" aria-label="双击聚焦"><circle cx="16" cy="16" r="10"/><circle cx="16" cy="16" r="4"/><path d="M16 2v5m0 18v5M2 16h5m18 0h5"/></svg>
+          </span>
+        </span>
+        <span class="station-escape-hint" role="img" aria-label="按 Escape 键进入主页"><kbd aria-hidden="true">ESC</kbd></span>
       </div>
     </div>
   </dialog>
@@ -328,9 +339,12 @@
         <h2>有合适的项目或机会，欢迎联系。</h2>
       </div>
       <div class="contact-grid" data-reveal>
-        <a href="#contact" data-email-link data-email-user="jarridaddison4" data-email-domain="gmail.com">发送邮件 <span aria-hidden="true">↗</span></a>
-        <a href="https://github.com/lc19990308" target="_blank" rel="noreferrer">github.com/lc19990308 <span aria-hidden="true">↗</span></a>
-        <a href="https://lc19990308.github.io/portfolio/resume.pdf" target="_blank" rel="noreferrer">下载 PDF 简历 <span aria-hidden="true">↗</span></a>
+        <a class="contact-primary" href="#contact" data-email-link data-email-user="jarridaddison4" data-email-domain="gmail.com">
+          <span class="contact-copy"><span class="contact-label">EMAIL / PRIMARY CHANNEL</span><span class="contact-address">jarridaddison4@gmail.com</span></span>
+          <span class="contact-action">发送邮件 <span aria-hidden="true">↗</span></span>
+        </a>
+        <a class="contact-secondary" href="https://github.com/lc19990308" target="_blank" rel="noreferrer"><span>GitHub</span><span class="contact-secondary-value">github.com/lc19990308</span><span aria-hidden="true">↗</span></a>
+        <a class="contact-secondary" href="https://lc19990308.github.io/portfolio/resume.pdf" target="_blank" rel="noreferrer"><span>PDF 简历</span><span class="contact-secondary-value">查看项目与经历</span><span aria-hidden="true">↗</span></a>
       </div>
       <div class="footer-bottom">
         <span>© <span id="current-year">2026</span> LewChaw</span>

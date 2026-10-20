@@ -8,8 +8,11 @@ function getGatewayElements() {
   if (!(dialog instanceof HTMLDialogElement)) return null
   return {
     dialog,
+    frame: dialog.querySelector('.station-frame'),
     mount: dialog.querySelector('.station-scene'),
     status: dialog.querySelector('.station-status'),
+    statusMessage: dialog.querySelector('.station-status-message'),
+    controls: dialog.querySelector('.station-controls'),
     launchers: [...document.querySelectorAll('[data-open-station]')],
     closers: [...dialog.querySelectorAll('[data-close-station]')],
   }
@@ -21,6 +24,8 @@ function createGatewayState() {
     previousFocus: null,
     closeTimer: 0,
     readyTimer: 0,
+    readyDeadline: 0,
+    enterFrame: 0,
     closing: false,
   }
 }
@@ -39,11 +44,14 @@ function restoreFocus(state, elements) {
 function cleanupGateway(state, elements, onChange) {
   window.clearTimeout(state.closeTimer)
   window.clearTimeout(state.readyTimer)
+  window.cancelAnimationFrame(state.enterFrame)
   state.iframe?.contentWindow?.postMessage({ type: 'station:destroy' }, window.location.origin)
   elements.mount?.replaceChildren()
   state.iframe = null
+  state.readyDeadline = 0
   state.closing = false
-  elements.dialog.classList.remove('station-leaving')
+  elements.dialog.classList.remove('station-entering', 'station-leaving')
+  elements.frame?.classList.remove('station-loading-active')
   document.documentElement.classList.remove('gateway-open')
   setExpanded(elements, false)
   onChange(false)
@@ -66,18 +74,28 @@ function dismissGateway(state, elements) {
   elements.dialog.classList.add('station-leaving')
   state.closeTimer = window.setTimeout(
     () => elements.dialog.close(),
-    motionQuery.matches ? 0 : 160,
+    motionQuery.matches ? 0 : 240,
   )
 }
 
 function updateReadyStatus(state, elements) {
   if (!elements.dialog.open || state.closing) return
+  const sceneState = state.iframe?.contentDocument?.documentElement?.dataset.sceneReady
+  if (sceneState === undefined && performance.now() < state.readyDeadline) {
+    state.readyTimer = window.setTimeout(() => updateReadyStatus(state, elements), 120)
+    return
+  }
+
+  const sceneReady = sceneState === 'true'
   elements.mount?.setAttribute('aria-busy', 'false')
-  const sceneReady = state.iframe?.contentDocument?.documentElement.dataset.sceneReady === 'true'
+  elements.frame?.classList.remove('station-loading-active')
   if (!elements.status) return
-  elements.status.textContent = sceneReady
-    ? '拖动旋转 · 滚轮缩放 · 双击聚焦'
-    : '当前设备使用静态驿站画面，可直接进入主页'
+  if (elements.controls) elements.controls.hidden = !sceneReady
+  if (elements.statusMessage) {
+    elements.statusMessage.textContent = sceneReady
+      ? ''
+      : '当前设备使用静态驿站画面，可直接进入主页'
+  }
 }
 
 function createStationFrame(state, elements) {
@@ -86,7 +104,17 @@ function createStationFrame(state, elements) {
   iframe.src = './station.html'
   iframe.setAttribute('tabindex', '0')
   iframe.addEventListener('load', () => {
-    state.readyTimer = window.setTimeout(() => updateReadyStatus(state, elements), 360)
+    if (state.iframe !== iframe || state.closing) return
+    window.clearTimeout(state.readyTimer)
+    const sceneReady = iframe.contentDocument?.documentElement?.dataset.sceneReady === 'true'
+    if (!sceneReady) {
+      elements.frame?.classList.add('station-loading-active')
+      elements.mount?.setAttribute('aria-busy', 'true')
+      if (elements.statusMessage) elements.statusMessage.textContent = '正在点亮驿站…'
+      if (elements.controls) elements.controls.hidden = true
+    }
+    state.readyDeadline = performance.now() + 8000
+    state.readyTimer = window.setTimeout(() => updateReadyStatus(state, elements), 120)
   })
   return iframe
 }
@@ -95,12 +123,21 @@ function showGateway(state, elements, onChange, event) {
   if (elements.dialog.open || state.closing) return
   state.previousFocus = event?.currentTarget || document.activeElement
   state.closing = false
+  state.readyDeadline = 0
+  elements.dialog.classList.add('station-entering')
+  elements.frame?.classList.add('station-loading-active')
   elements.mount?.setAttribute('aria-busy', 'true')
-  if (elements.status) elements.status.textContent = '正在点亮驿站…'
+  if (elements.statusMessage) elements.statusMessage.textContent = '正在点亮驿站…'
+  if (elements.controls) elements.controls.hidden = true
   state.iframe = createStationFrame(state, elements)
+  state.readyDeadline = performance.now() + 8000
+  state.readyTimer = window.setTimeout(() => updateReadyStatus(state, elements), 120)
   document.documentElement.classList.add('gateway-open')
   elements.dialog.showModal()
   elements.mount?.replaceChildren(state.iframe)
+  state.enterFrame = window.requestAnimationFrame(() => {
+    elements.dialog.classList.remove('station-entering')
+  })
   setExpanded(elements, true)
   onChange(true)
   elements.dialog.querySelector('[data-close-station]')?.focus({ preventScroll: true })
@@ -169,7 +206,9 @@ function initEmailLinks() {
     const address = `${element.dataset.emailUser}@${element.dataset.emailDomain}`
     if (element.hasAttribute('data-email-link')) {
       element.setAttribute('href', `mailto:${address}`)
-      if (element.firstChild?.nodeType === Node.TEXT_NODE) element.firstChild.nodeValue = `${address} `
+      const addressLabel = element.querySelector('.contact-address')
+      if (addressLabel) addressLabel.textContent = address
+      else if (element.firstChild?.nodeType === Node.TEXT_NODE) element.firstChild.nodeValue = `${address} `
     } else {
       element.textContent = address
     }

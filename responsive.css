@@ -90,10 +90,6 @@
   .station-bottomline {
     font-size: 0.62rem;
   }
-
-  .station-bottomline span:last-child {
-    display: none;
-  }
 }
 
 @media (max-width: 560px) {
@@ -125,10 +121,35 @@
     border-radius: 22px;
   }
 
-  .signal-panel-header,
-  .signal-readout {
+  .signal-panel-header {
     right: 20px;
     left: 20px;
+  }
+
+  .signal-readout {
+    right: 14px;
+    left: 14px;
+    padding: 10px 12px 9px;
+  }
+
+  .readout-row strong {
+    font-size: 0.92rem;
+  }
+
+  .signal-readout p {
+    font-size: 0.7rem;
+  }
+
+  .network-controls {
+    right: 14px;
+    left: 14px;
+    bottom: 128px;
+    gap: 6px;
+  }
+
+  .network-tab {
+    padding: 0 5px;
+    font-size: 0.64rem;
   }
 
   .project-card {
@@ -156,6 +177,42 @@
 
   .capability-card p {
     min-height: 0;
+  }
+
+  .contact-grid .contact-primary {
+    min-height: 0;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+    padding: 22px;
+  }
+
+  .contact-address {
+    font-size: clamp(1.1rem, 6vw, 1.6rem);
+  }
+
+  .contact-secondary {
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .contact-secondary-value {
+    max-width: 46%;
+    font-size: 0.64rem;
+  }
+
+  .station-loading-ring {
+    left: 50%;
+    width: min(58vw, 280px);
+  }
+
+  .station-controls {
+    gap: 8px;
+  }
+
+  .station-controls svg {
+    width: 22px;
+    height: 22px;
   }
 
   .footer-bottom {
