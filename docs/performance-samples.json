@@ -1,0 +1,68 @@
+[
+  {
+    "version": "before",
+    "drawCalls": "496",
+    "loadMs": "481",
+    "loadingStage": "ready",
+    "pixelRatio": "1",
+    "renderedFrames": "3",
+    "runtimeState": "running",
+    "state": "ready"
+  },
+  {
+    "version": "after",
+    "drawCalls": "328",
+    "loadMs": "331",
+    "loadingStage": "ready",
+    "pixelRatio": "1",
+    "renderedFrames": "2",
+    "runtimeState": "running",
+    "shaderPrograms": "12",
+    "state": "ready",
+    "timings": "{\"engineMs\":11,\"buildMs\":85,\"shaderMs\":38,\"firstFrameMs\":136,\"bootMs\":300,\"totalMs\":322}"
+  },
+  {
+    "version": "before",
+    "drawCalls": "496",
+    "loadMs": "456",
+    "loadingStage": "ready",
+    "pixelRatio": "1",
+    "renderedFrames": "3",
+    "runtimeState": "running",
+    "state": "ready"
+  },
+  {
+    "version": "after",
+    "drawCalls": "328",
+    "loadMs": "343",
+    "loadingStage": "ready",
+    "pixelRatio": "1",
+    "renderedFrames": "3",
+    "runtimeState": "running",
+    "shaderPrograms": "12",
+    "state": "ready",
+    "timings": "{\"engineMs\":21,\"buildMs\":56,\"shaderMs\":71,\"firstFrameMs\":130,\"bootMs\":311,\"totalMs\":336}"
+  },
+  {
+    "version": "before",
+    "drawCalls": "496",
+    "loadMs": "381",
+    "loadingStage": "ready",
+    "pixelRatio": "1",
+    "renderedFrames": "2",
+    "runtimeState": "running",
+    "state": "ready"
+  },
+  {
+    "version": "after",
+    "drawCalls": "328",
+    "loadMs": "351",
+    "loadingStage": "ready",
+    "pixelRatio": "1",
+    "renderedFrames": "3",
+    "runtimeState": "running",
+    "shaderPrograms": "12",
+    "state": "ready",
+    "timings": "{\"engineMs\":11,\"buildMs\":68,\"shaderMs\":69,\"firstFrameMs\":136,\"bootMs\":320,\"totalMs\":343}"
+  }
+]

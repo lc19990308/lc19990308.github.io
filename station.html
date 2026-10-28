@@ -8,17 +8,21 @@
   <title>LewChaw 前端驿站</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./station.css">
+  <link rel="modulepreload" href="./vendor/three.module.min.js">
+  <link rel="modulepreload" href="./vendor/three.core.min.js">
+  <link rel="modulepreload" href="./static-batch.js">
+  <link rel="modulepreload" href="./vendor/BufferGeometryUtils.js">
   <script type="module" src="./station.js"></script>
 </head>
 <body>
   <main class="station-shell" aria-label="LewChaw 的前端驿站三维场景">
-    <canvas id="station-canvas" tabindex="0" aria-label="可拖拽、缩放的三维驿站场景"></canvas>
+    <canvas id="station-canvas" tabindex="0" aria-label="三维驿站；拖动或左右方向键旋转，Home 键复位，Ctrl 加滚轮缩放"></canvas>
     <div class="station-fallback" id="station-fallback" aria-hidden="true">
       <div class="fallback-orbit"></div>
       <div class="fallback-card">
         <span>LC FIELD STATION</span>
         <strong>Vue · Three.js · IoT · AI</strong>
-        <p>静态驿站画面已启用</p>
+        <p>正在连接驿站…</p>
       </div>
     </div>
   </main>

@@ -9,60 +9,33 @@
   <meta property="og:description" content="一座连接项目、写作与真实工程经验的前端驿站。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://lc19990308.github.io/">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; frame-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <title>LewChaw | Frontend Signal Station</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./sections.css">
   <link rel="stylesheet" href="./responsive.css">
+  <link rel="stylesheet" href="./loading.css">
   <script type="module" src="./app.js"></script>
 </head>
 <body>
+  <dialog class="site-loader" id="site-loader" aria-labelledby="loader-title" aria-describedby="loader-detail" data-stage="engine">
+    <div class="loader-topline"><a class="loader-brand" href="#top">LC <span>LEWCHAW / FIELD STATION</span></a><span>EST. 2020 — ALWAYS BUILDING</span></div>
+    <div class="loader-body">
+      <div class="loader-orbit" aria-hidden="true"><span class="loader-orbit-ring"></span><span class="loader-orbit-core">LC</span><i></i><b>FRONTEND SIGNAL STATION</b></div>
+      <p class="loader-eyebrow">CONNECTING IDEAS TO REALITY</p>
+      <h2 id="loader-title">欢迎抵达，<br><em>前端驿站。</em></h2>
+      <p id="loader-detail" role="status">正在加载三维引擎与本地资源</p>
+      <div class="loader-track" aria-hidden="true"><span></span></div>
+      <ol class="loader-steps" aria-label="驿站准备阶段"><li data-step="engine" aria-current="step"><span>01</span>连接资源</li><li data-step="structure"><span>02</span>搭建场景</li><li data-step="render"><span>03</span>准备画面</li><li data-step="ready"><span>04</span>进入驿站</li></ol>
+      <button id="loader-skip" type="button" autofocus>先看主页 <span aria-hidden="true">↗</span></button>
+    </div>
+    <div class="loader-footer"><span>VUE / VISUALIZATION / IoT / AI</span><span>准备完成后自动进入</span></div>
+  </dialog>
+  <script src="./loader.js"></script>
   <a class="skip-link" href="#main">跳到主要内容</a>
 
-  <dialog id="station-gateway" class="station-gateway" aria-labelledby="station-title" aria-describedby="station-subtitle">
-    <div class="station-frame">
-      <div class="station-scene" aria-busy="true"></div>
-      <div class="station-loading" aria-hidden="true"><span class="station-loading-ring"></span><span class="station-loading-scan"></span></div>
-      <div class="station-vignette" aria-hidden="true"></div>
-
-      <div class="station-topline">
-        <span>LC / FIELD STATION</span>
-        <button class="station-close" type="button" data-close-station aria-label="关闭驿站，进入主页">×</button>
-      </div>
-
-      <div class="station-intro">
-        <p class="station-kicker">FRONTEND · IOT · AI · VISUALIZATION</p>
-        <h2 id="station-title">欢迎来到<br><em>LewChaw 的前端驿站。</em></h2>
-        <p id="station-subtitle">把真实项目、技术笔记和工程判断，<br>收进一座可以停靠的信号站。</p>
-        <button class="station-enter" type="button" data-close-station>
-          进入主页
-          <span aria-hidden="true">↗</span>
-        </button>
-      </div>
-
-      <div class="station-bottomline">
-        <span class="station-meta">
-          <span class="station-loc">ZHENGZHOU</span>
-          <span class="station-online"><span class="station-online-dot" aria-hidden="true"></span>ONLINE</span>
-        </span>
-        <span class="station-status" role="status" aria-live="polite">
-          <span class="station-status-message">正在点亮驿站…</span>
-          <span class="station-controls" aria-label="场景操作提示" hidden>
-            <svg viewBox="0 0 32 32" role="img" aria-label="拖动旋转"><path d="M16 4v24M4 16h24M16 4l-3 4m3-4 3 4M16 28l-3-4m3 4 3-4M4 16l4-3m-4 3 4 3m20-3-4-3m4 3-4 3"/><circle cx="16" cy="16" r="4"/></svg>
-            <svg viewBox="0 0 32 32" role="img" aria-label="滚轮缩放"><rect x="9" y="3.5" width="14" height="25" rx="7"/><path d="M16 8v7m-3-4 3-3 3 3M12 21h8m-8 0 3-3m-3 3 3 3m5-3-3-3m3 3-3 3"/></svg>
-            <svg viewBox="0 0 32 32" role="img" aria-label="双击聚焦"><circle cx="16" cy="16" r="10"/><circle cx="16" cy="16" r="4"/><path d="M16 2v5m0 18v5M2 16h5m18 0h5"/></svg>
-          </span>
-        </span>
-        <span class="station-escape-hint" role="img" aria-label="按 Escape 键进入主页"><kbd aria-hidden="true">ESC</kbd></span>
-      </div>
-    </div>
-  </dialog>
-
-  <div class="page-shell" id="top">
+<div class="page-shell" id="top">
     <header class="site-header">
       <a class="brand" href="#top" aria-label="回到首页">
         <span class="brand-mark">LC</span>
@@ -73,13 +46,10 @@
       </a>
 
       <nav class="site-nav" aria-label="主导航">
-        <button class="station-launch" type="button" data-open-station aria-haspopup="dialog" aria-controls="station-gateway" aria-expanded="false">
-          <span aria-hidden="true">◇</span> 驿站漫游
-        </button>
-        <a href="#projects">Projects</a>
-        <a href="#writing">Writing</a>
-        <a href="#stack">Stack</a>
-        <a href="#contact">Contact</a>
+<a href="#projects">精选项目</a>
+        <a href="#writing">技术笔记</a>
+        <a href="#stack">能力</a>
+        <a href="#contact">联系我 ↗</a>
       </nav>
 
       <div class="header-meta" aria-label="当前状态">
@@ -91,54 +61,38 @@
 
     <main id="main">
       <section class="hero-section" aria-labelledby="hero-title">
-        <div class="hero-copy" data-reveal>
-          <p class="eyebrow">SIGNAL 001 / FRONTEND ENGINEER</p>
-          <h1 id="hero-title">把复杂业务<br><em>做成可运行的界面。</em></h1>
-          <p class="hero-summary">我是 LewChaw，6 年前端开发工程师。长期处理桌面中后台、移动跨平台、IoT 通信与 AI 应用落地，擅长把零散接口、硬件协议和真实业务流程连接成稳定产品。</p>
-
+        <div class="hero-copy">
+          <p class="eyebrow">LEWCHAW / FRONTEND ENGINEER</p>
+          <h1 id="hero-title">把复杂业务<br><em>做成真实产品。</em></h1>
+          <p class="hero-summary">你好，我是 LewChaw，6 年经验的前端工程师。<br>专注数据可视化、IoT 与 AI 应用，让复杂系统稳定运行。</p>
           <div class="hero-actions" aria-label="主要入口">
-            <a class="button button-primary" href="#projects">查看精选项目 <span aria-hidden="true">↓</span></a>
-            <a class="button button-secondary" href="https://lc19990308.github.io/web-blog/" target="_blank" rel="noreferrer">技术博客 <span aria-hidden="true">↗</span></a>
-            <a class="button button-ghost" href="https://github.com/lc19990308" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+            <a class="button button-primary" href="#projects">探索精选项目 <span aria-hidden="true">↘</span></a>
+            <a class="button button-secondary" href="https://lc19990308.github.io/web-blog/" target="_blank" rel="noreferrer">技术笔记 <span aria-hidden="true">↗</span></a>
           </div>
-
           <dl class="hero-facts" aria-label="个人概览">
-            <div>
-              <dt>YEARS</dt>
-              <dd>6+</dd>
-            </div>
-            <div>
-              <dt>PROJECTS</dt>
-              <dd>15+</dd>
-            </div>
-            <div>
-              <dt>SKILLS</dt>
-              <dd>48</dd>
-            </div>
+            <div><dt>工程经验</dt><dd>6<span> 年</span></dd></div>
+            <div><dt>交付项目</dt><dd>15<span> +</span></dd></div>
+            <div><dt>专注领域</dt><dd>Web<span> / IoT / AI</span></dd></div>
           </dl>
         </div>
-
-        <div class="signal-panel" data-reveal>
-          <div class="signal-panel-header">
-            <span id="network-mode-badge">01 / CAPABILITY TOPOLOGY</span>
-            <span class="live-tag">3D REALTIME</span>
+        <div class="station-viewer" data-state="loading" aria-label="可交互的三维前端驿站">
+          <div class="viewer-topline">
+            <span class="viewer-index">01 / THE FIELD STATION</span>
+            <span class="viewer-state"><i class="status-dot" aria-hidden="true"></i><span id="scene-status" role="status">前端驿站</span></span>
           </div>
-          <div class="network-wrap">
-            <canvas id="signal-network" aria-label="由 Vue、TypeScript、Three.js、IoT 和 AI 等能力节点组成的三维动态拓扑图"></canvas>
-            <div class="network-fallback">Vue · TypeScript · Three.js · IoT · AI · WebRTC</div>
+          <div class="station-viewport">
+            <div class="scene-poster"><img src="./station-poster.svg" width="800" height="600" alt="由玻璃工作室、信号塔与轨道组成的前端驿站静态预览" fetchpriority="high"><div class="scene-poster-label"><span id="scene-loading-detail">正在加载三维驿站</span><button id="scene-retry" type="button" hidden>重新连接 ↻</button></div></div>
+            <iframe id="station-frame" data-src="./station.html?inline=1" title="三维前端驿站，拖动旋转，方向键调整视角" loading="eager"></iframe>
           </div>
-          <div class="network-controls" role="group" aria-label="切换 3D 视图">
-            <button type="button" class="network-tab active" data-view="topology" aria-pressed="true"><span>01</span> 能力星云</button>
-            <button type="button" class="network-tab" data-view="architecture" aria-pressed="false"><span>02</span> 分层架构</button>
-            <button type="button" class="network-tab" data-view="twin" aria-pressed="false"><span>03</span> IoT 孪生</button>
-          </div>
-          <div class="signal-readout">
-            <div class="readout-row">
-              <span id="readout-label">CORE LOOP</span>
-              <strong id="readout-title">Vue 3 · Three.js · AI · IoT</strong>
+          <div class="viewer-bottomline">
+            <span class="viewer-caption">一个持续生长的前端实验室</span>
+            <div class="viewer-controls" hidden>
+              <button id="scene-motion" type="button" aria-pressed="false" aria-controls="station-frame">暂停动效</button>
+              <button id="scene-reset" type="button" aria-controls="station-frame">重置视角 ↺</button>
             </div>
-            <p id="readout-desc">立体空间中的节点映射真实业务中持续演进的核心技术资产。</p>
           </div>
+          <p class="viewer-hint"><span class="hint-desktop">拖动旋转 · Ctrl + 滚轮缩放 · 方向键调整视角</span><span class="hint-touch">左右拖动旋转 · 上下滑动浏览</span></p>
+          <noscript><p class="viewer-hint">当前显示静态预览，启用 JavaScript 后可漫游驿站。</p></noscript>
         </div>
       </section>
 
@@ -156,7 +110,7 @@
         <div class="signal-cell" data-reveal>
           <span>OPEN CHANNEL</span>
           <strong>合作与技术交流</strong>
-          <p><span data-email-text data-email-user="jarridaddison4" data-email-domain="gmail.com">邮箱地址已启用脚本保护</span></p>
+          <p><span data-email-text data-email-user="jarridaddison4" data-email-domain="gmail.com">jarridaddison4@gmail.com</span></p>
         </div>
       </section>
 
@@ -339,7 +293,7 @@
         <h2>有合适的项目或机会，欢迎联系。</h2>
       </div>
       <div class="contact-grid" data-reveal>
-        <a class="contact-primary" href="#contact" data-email-link data-email-user="jarridaddison4" data-email-domain="gmail.com">
+        <a class="contact-primary" href="mailto:jarridaddison4@gmail.com" data-email-link data-email-user="jarridaddison4" data-email-domain="gmail.com">
           <span class="contact-copy"><span class="contact-label">EMAIL / PRIMARY CHANNEL</span><span class="contact-address">jarridaddison4@gmail.com</span></span>
           <span class="contact-action">发送邮件 <span aria-hidden="true">↗</span></span>
         </a>
@@ -348,7 +302,7 @@
       </div>
       <div class="footer-bottom">
         <span>© <span id="current-year">2026</span> LewChaw</span>
-        <span>FRONTEND SIGNAL STATION / V1.0</span>
+        <span>DESIGNED TO CONNECT / 2026</span>
       </div>
     </footer>
   </div>

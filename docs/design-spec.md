@@ -1,27 +1,17 @@
-# Design Spec
+# Frontend Signal Station — 第二轮 · 2026-10-28
 
-## Existing visual system
+- 单个真实可交互的 Three.js 驿站首屏，保留完整项目、写作、能力、经历与联系方式。
+- 主体取消固定最大宽度。桌面边距 clamp(24px, 3.5vw, 112px)，1920/2560px 对应每侧约 67/90px；小屏覆盖为固定紧凑边距。
+- 桌面介绍/场景约 38:62 分栏；标题与场景随屏幕扩展。820px 以下场景在前、介绍在后。
+- 1440px 以上项目使用三列交错构图，特色卡跨两列；写作区与联系区分栏。正文限制约 35–43em，避免大屏过长行。
+- 石墨背景、冰蓝重点与实色蓝按钮，轻量工程线稿，设备本地字体。所有运行依赖同源。
+- 原生 dialog Loading：加载本地引擎→构建场景→准备画面→就绪。进度只表达实际阶段，不模拟百分比，不设置最短停留时间。按钮与 Escape 可跳过，20 秒兜底退出，无 JS 时不打开。
+- 直接访问已知内容锚点时绕过 Loading；3D 进入视口后再加载。
+- 场景依赖 modulepreload 并行，动态导入引擎与几何工具；异步分段构建；compileAsync 后提交首帧再发送 ready。
+- 玻璃使用 MeshStandardMaterial 透明近似，所有设备取消 transmission。小容器/粗指针设备 DPR 至多 1、30fps 上限、无阴影；桌面 DPR 至多 1.5、阴影 1024。
+- 只合并静态不透明同材质零件，透明与动画对象独立。滚出视口、后台、手动暂停取消持续 RAF。后台完成初始化可单次提交首帧，保证减少动态效果下返回也有画面。
+- 系统减少动态效果默认静态；用户可主动播放或调整视角。普通滚轮浏览，Ctrl/Command 加滚轮缩放，触摸横向旋转、纵向浏览，Tab 离开画布。
+- 故障保留静态 SVG 与重试，正文可用。父子消息验证同源与 source，进度文案使用 textContent。
+- 启动诊断保存在 .station-viewer 的 data-load-ms/data-timings/data-draw-calls；仅用于本地诊断，不上传。
 
-- Page background uses `--bg: #070a12`; cards use the existing dark surfaces and fine `--line` borders.
-- Cyan (`--cyan: #7dd3fc`) is the main interaction accent; amber is reserved for secondary highlights.
-- Typography uses the existing display, body, and mono font tokens. Keep existing radius and spacing tokens.
-- Station scene uses dark glass, cyan indicators, restrained metal trim, and a low contrast vignette.
-
-## Contact area
-
-- Make the email address the primary contact action and show the address itself.
-- Keep GitHub and the PDF resume as secondary actions with clear labels and consistent alignment.
-- Reuse current typography, dark surfaces, cyan hover state, and responsive breakpoints.
-
-## Station house
-
-- Preserve the transparent greenhouse-like house silhouette and readable interior.
-- Improve glass with restrained pane divisions, edge highlights, fine metal framing, and subtle interior light.
-- Avoid opaque wall fills, heavy structural framing, and extra raised bases.
-
-## Station gateway
-
-- Keep the existing modal, focus handling, ESC behavior, and iframe lifecycle.
-- Make loading feedback visually clear without covering the station scene with a large opaque panel.
-- Animate both opening and closing; honor `prefers-reduced-motion`.
-- When the scene is ready, show mouse operation icons without visible instructional text; keep accessible labels.
+测试口径与限制见 README.md。

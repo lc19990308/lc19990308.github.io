@@ -1,8 +1,27 @@
-import * as THREE from './vendor/three.module.min.js'
+let THREE
+let batchStaticMeshes
+
+const timings = {}
+const bootStarted = performance.now()
+
+function reportProgress(stage, text) {
+  document.documentElement.dataset.loadingStage = stage
+  const description = document.querySelector('.fallback-card p')
+  if (description) description.textContent = text
+  if (window.parent !== window) {
+    window.parent.postMessage({ type: 'station:progress', stage, text, elapsedMs: performance.now() }, window.location.origin)
+  }
+}
+
+function yieldToMain() {
+  return new Promise(resolve => window.setTimeout(resolve, 0))
+}
 
 const canvas = document.querySelector('#station-canvas')
 const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
 const fallbackTitle = document.querySelector('.fallback-card strong')
+const inlineScene = new URLSearchParams(window.location.search).get('inline') === '1'
+const compactDevice = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 520
 
 // --- Linear / Apple 顶级质感色板 ---
 const theme = {
@@ -30,28 +49,19 @@ function createMetalMaterial(color, roughness = 0.28, metalness = 0.88) {
   })
 }
 
-// 苹果级物理毛玻璃材质
+// Thin transparent glass keeps the silhouettes and edge lighting without the
+// expensive screen transmission pass or extra physical shader variants.
 function createFrostedGlassMaterial({
   color = theme.glassFrost,
   roughness = 0.14,
-  transmission = 0.88,
-  thickness = 0.45,
-  ior = 1.52,
-  clearcoat = 1.0,
-  clearcoatRoughness = 0.08,
   opacity = 0.85,
 } = {}) {
-  return new THREE.MeshPhysicalMaterial({
+  return new THREE.MeshStandardMaterial({
     color,
-    roughness,
-    transmission,
-    thickness,
-    ior,
-    clearcoat,
-    clearcoatRoughness,
+    roughness: Math.max(roughness, 0.22),
+    metalness: 0.16,
     transparent: true,
-    opacity,
-    specularIntensity: 1.0,
+    opacity: opacity * (compactDevice ? 0.34 : 0.46),
     depthWrite: false,
   })
 }
@@ -753,13 +763,14 @@ function createSuspendedChassis(world) {
 
   // 表面：整块大尺寸 Apple 物理毛玻璃操作台面 (Physical Frosted Glass Platter)
   const glassPlatterMat = createFrostedGlassMaterial({
-    color: 0xf8fafc,
+    color: 0x446475,
     roughness: 0.12,
     transmission: 0.88,
     thickness: 0.75,
     ior: 1.52,
     clearcoat: 1.0,
     clearcoatRoughness: 0.06,
+    opacity: 0.68,
   })
   const glassTopGeo = new THREE.CylinderGeometry(5.5, 5.5, 0.14, 8)
   const glassTop = addMesh(group, glassTopGeo, glassPlatterMat, [0, 0.22, 0], [0, Math.PI / 8, 0])
@@ -905,7 +916,7 @@ function createTerminalStudio(world) {
   const roofGlowMat = createGlowMaterial(theme.accentCyan, 0.18)
   addMesh(studio, new THREE.BoxGeometry(3.72, 0.008, 0.014), roofGlowMat, [-0.2, 2.205, -1.08])
   addMesh(studio, new THREE.BoxGeometry(0.014, 0.008, 2.32), roofGlowMat, [-2.08, 2.205, 0.1])
-  const interiorLight = new THREE.PointLight(theme.accentCyan, 0.48, 3.8, 1.8)
+  const interiorLight = new THREE.PointLight(0xffe5c2, 0.72, 3.8, 1.8)
   interiorLight.position.set(-0.1, 1.92, 0.15)
   studio.add(interiorLight)
   const roofLipMat = createGlowMaterial(theme.accentCyan, 0.42)
@@ -1216,14 +1227,12 @@ function createSignalTower(world) {
   tower.add(coreGroup)
 
   const octaGeo = new THREE.OctahedronGeometry(0.25, 0)
-  const octaMat = new THREE.MeshPhysicalMaterial({
+  const octaMat = new THREE.MeshStandardMaterial({
     color: theme.accentCyan,
     emissive: theme.accentCyan,
     emissiveIntensity: 0.75,
-    roughness: 0.08,
-    transmission: 0.65,
-    thickness: 0.5,
-    clearcoat: 1.0,
+    roughness: 0.2,
+    metalness: 0.2,
   })
   const crystal = new THREE.Mesh(octaGeo, octaMat)
   coreGroup.add(crystal)
@@ -2009,28 +2018,28 @@ function createDataPhotons(scene) {
 function createRenderer() {
   const renderer = new THREE.WebGLRenderer({
     canvas,
-    antialias: !motionQuery.matches,
+    antialias: true,
     alpha: true,
-    powerPreference: motionQuery.matches ? 'low-power' : 'high-performance',
+    powerPreference: compactDevice || motionQuery.matches ? 'low-power' : 'default',
   })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compactDevice ? 1 : 1.5))
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.ACESFilmicToneMapping
-  renderer.toneMappingExposure = 1.15
-  renderer.shadowMap.enabled = true
+  renderer.toneMappingExposure = 1.42
+  renderer.shadowMap.enabled = !compactDevice
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
   return renderer
 }
 
 // 电影级 Apple / Linear 灯光系统
 function setupLighting(scene) {
-  const hemi = new THREE.HemisphereLight(0xe2e8f0, 0x090a0f, 1.4)
+  const hemi = new THREE.HemisphereLight(0xe2f4fa, 0x192330, 1.9)
   scene.add(hemi)
 
-  const keyLight = new THREE.DirectionalLight(0xf8fafc, 2.8)
+  const keyLight = new THREE.DirectionalLight(0xffefd9, 3.2)
   keyLight.position.set(-5, 9, 7)
-  keyLight.castShadow = true
-  const shadowResolution = motionQuery.matches ? 1024 : 2048
+  keyLight.castShadow = !compactDevice
+  const shadowResolution = compactDevice ? 512 : 1024
   keyLight.shadow.mapSize.set(shadowResolution, shadowResolution)
   keyLight.shadow.bias = -0.00015
   keyLight.shadow.camera.near = 1
@@ -2054,22 +2063,46 @@ function setupLighting(scene) {
   scene.add(deskLight)
 }
 
-function buildStationWorld(scene) {
+async function buildStationWorld(scene) {
   const world = new THREE.Group()
   scene.add(world)
 
   world.add(createContactShadow())
 
   const chassis = createSuspendedChassis(world)
+  reportProgress('details', '组装温室与工作台')
+  await yieldToMain()
   const studioData = createTerminalStudio(world)
+  reportProgress('details', '连接天线与巡检设备')
+  await yieldToMain()
   const towerData = createSignalTower(world)
   const groundBot = createGroundBot(world)
   const landingPadData = createLandingPad(world)
   const droneData = createInspectorDrone(world)
+  reportProgress('details', '布置驿站人物与信号屏')
+  await yieldToMain()
   const person = createArchitectFigure(world)
   const technician = createStationTechnician(world)
   const portalData = createFloatingPortals(world)
   const photonData = createDataPhotons(scene)
+
+  reportProgress('batching', '合并静态物件，整理绘制任务')
+  await yieldToMain()
+
+  // These subtrees have fixed transforms. Keep animated people, vehicles,
+  // tower crystal, pulse rings and transparent panes as individual objects.
+  const batches = [
+    batchStaticMeshes(chassis),
+    batchStaticMeshes(studioData.studio),
+    batchStaticMeshes(portalData.portalGroup),
+    batchStaticMeshes(towerData.tower, new Set([
+      towerData.coreGroup,
+      ...towerData.waveRings.map(wave => wave.mesh),
+    ])),
+  ]
+  document.documentElement.dataset.batchedMeshes = String(
+    batches.reduce((total, batch) => total + batch.removedMeshes, 0),
+  )
 
   return {
     world,
@@ -2086,7 +2119,7 @@ function buildStationWorld(scene) {
   }
 }
 
-function createSceneContext() {
+async function createSceneContext() {
   const renderer = createRenderer()
   const scene = new THREE.Scene()
   scene.background = new THREE.Color(theme.bg)
@@ -2105,7 +2138,13 @@ function createSceneContext() {
     targetRadius: 15.0,
   }
 
-  const worldComponents = buildStationWorld(scene)
+  let worldComponents
+  try {
+    worldComponents = await buildStationWorld(scene)
+  } catch (error) {
+    disposeScene(scene, renderer)
+    throw error
+  }
 
   return {
     renderer,
@@ -2141,7 +2180,7 @@ function updateCamera(context, lerp = false) {
   camera.lookAt(rig.target)
 }
 
-function resizeStation(context) {
+function resizeStation(context, render = true) {
   const rect = canvas.getBoundingClientRect()
   const width = Math.max(1, Math.floor(rect.width))
   const height = Math.max(1, Math.floor(rect.height))
@@ -2150,16 +2189,23 @@ function resizeStation(context) {
   context.camera.aspect = aspect
   context.camera.updateProjectionMatrix()
 
-  // 宽屏/桌面端自动向右偏移，为左侧文字预留充足呼吸留白
-  const offsetX = aspect > 1.25 ? Math.min(2.1, (aspect - 1.1) * 1.5) : 0
+  // The inline scene has its own column, so its model stays centered.
+  const offsetX = !inlineScene && aspect > 1.25 ? Math.min(2.1, (aspect - 1.1) * 1.5) : 0
   context.world.position.x = offsetX
   context.rig.target.x = offsetX - 0.2
 
+  if (inlineScene) {
+    const homeRadius = Math.min(23, Math.max(14.5, 16.4 / aspect))
+    const zoom = context.homeRadius ? context.rig.targetRadius / context.homeRadius : 1
+    context.homeRadius = homeRadius
+    context.rig.targetRadius = THREE.MathUtils.clamp(homeRadius * zoom, 6.5, 24)
+  }
+
   updateCamera(context, false)
-  context.renderer.render(context.scene, context.camera)
+  if (render) context.renderer.render(context.scene, context.camera)
 }
 
-function renderStation(context, time = 0) {
+function renderStation(context, time = 0, delta = 0) {
   const sec = time * 0.001
 
   // 1. 基座空间呼吸
@@ -2228,7 +2274,7 @@ function renderStation(context, time = 0) {
     const posAttr = photonData.points.geometry.attributes.position
     const arr = posAttr.array
     for (let i = 0; i < photonData.count; i++) {
-      let y = arr[i * 3 + 1] + photonData.speeds[i] * 0.012
+      let y = arr[i * 3 + 1] + photonData.speeds[i] * delta * 0.72
       if (y > 7.0) y = -0.5
       arr[i * 3 + 1] = y
     }
@@ -2245,17 +2291,40 @@ function renderStation(context, time = 0) {
 function bindPointerControls(context, renderOnce) {
   const { rig } = context
   let dragging = false
+  let touchPending = false
+  let pointerId = null
+  let startX = 0
+  let startY = 0
   let lastX = 0
   let lastY = 0
 
   canvas.addEventListener('pointerdown', event => {
-    dragging = true
+    if (!event.isPrimary || event.button > 0) return
+    pointerId = event.pointerId
+    touchPending = inlineScene && event.pointerType === 'touch'
+    dragging = !touchPending
+    startX = event.clientX
+    startY = event.clientY
     lastX = event.clientX
     lastY = event.clientY
-    canvas.setPointerCapture(event.pointerId)
+    if (dragging) canvas.setPointerCapture(event.pointerId)
   })
 
   canvas.addEventListener('pointermove', event => {
+    if (event.pointerId !== pointerId) return
+    if (touchPending) {
+      const travelX = Math.abs(event.clientX - startX)
+      const travelY = Math.abs(event.clientY - startY)
+      if (travelY > 8 && travelY >= travelX) {
+        touchPending = false
+        pointerId = null
+        return
+      }
+      if (travelX < 8 || travelX <= travelY) return
+      touchPending = false
+      dragging = true
+      canvas.setPointerCapture(event.pointerId)
+    }
     if (!dragging) return
     const dx = event.clientX - lastX
     const dy = event.clientY - lastY
@@ -2268,8 +2337,10 @@ function bindPointerControls(context, renderOnce) {
   })
 
   const onPointerUp = event => {
-    if (!dragging) return
+    if (event.pointerId !== pointerId) return
     dragging = false
+    touchPending = false
+    pointerId = null
     try {
       canvas.releasePointerCapture(event.pointerId)
     } catch {}
@@ -2284,6 +2355,7 @@ function bindZoomAndFocus(context, renderOnce) {
   canvas.addEventListener(
     'wheel',
     event => {
+      if (inlineScene && !event.ctrlKey && !event.metaKey) return
       event.preventDefault()
       rig.targetRadius += event.deltaY * 0.009
       rig.targetRadius = THREE.MathUtils.clamp(rig.targetRadius, 6.5, 24.0)
@@ -2295,7 +2367,7 @@ function bindZoomAndFocus(context, renderOnce) {
   canvas.addEventListener('dblclick', () => {
     rig.targetTheta = 0.55
     rig.targetPhi = 1.25
-    rig.targetRadius = rig.targetRadius > 11.0 ? 8.8 : 15.0
+    rig.targetRadius = rig.targetRadius > 11.0 ? 8.8 : (context.homeRadius || 15)
     renderOnce()
   })
 }
@@ -2311,7 +2383,7 @@ function bindKeyboardControls(context, renderOnce) {
     else if (event.key === 'Home') {
       rig.targetTheta = 0.55
       rig.targetPhi = 1.25
-      rig.targetRadius = 15.0
+      rig.targetRadius = context.homeRadius || 15.0
     } else return
 
     rig.targetPhi = THREE.MathUtils.clamp(rig.targetPhi, 0.35, 1.42)
@@ -2319,6 +2391,7 @@ function bindKeyboardControls(context, renderOnce) {
     renderOnce()
   })
 
+  if (inlineScene) return
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') {
       event.preventDefault()
@@ -2347,73 +2420,236 @@ function disposeScene(scene, renderer) {
 function createRuntime(context) {
   let animationFrame = 0
   let destroyed = false
+  let contextLost = false
+  let parentVisible = true
+  let manualPaused = motionQuery.matches
+  let lastTime = 0
+  let elapsed = 0
+  let renderedFrames = 0
+  let lastDiagnosticTime = 0
+
+  document.documentElement.dataset.pixelRatio = String(context.renderer.getPixelRatio())
+  document.documentElement.dataset.renderedFrames = '0'
+
+  function postParent(data) {
+    if (window.parent !== window) window.parent.postMessage(data, window.location.origin)
+  }
+
+  function setState(state) {
+    document.documentElement.dataset.runtimeState = state
+    document.documentElement.dataset.renderedFrames = String(renderedFrames)
+  }
+
+  function canAnimate() {
+    return !destroyed && !contextLost && parentVisible && !document.hidden && !manualPaused
+  }
+
+  function draw(initialFrame = false) {
+    // Submit one real initial frame even if the user switched tabs while the
+    // shaders were loading. Normal redraws and RAF still honor visibility.
+    if (destroyed || contextLost || (!initialFrame && (!parentVisible || document.hidden))) return
+    updateCamera(context, false)
+    renderStation(context, elapsed, 0)
+    renderedFrames += 1
+    document.documentElement.dataset.renderedFrames = String(renderedFrames)
+  }
+
+  function sync(notifyParent = true) {
+    window.cancelAnimationFrame(animationFrame)
+    animationFrame = 0
+    lastTime = 0
+    if (destroyed || contextLost) return
+    if (canAnimate()) {
+      setState('running')
+      animationFrame = window.requestAnimationFrame(loop)
+    } else {
+      setState(motionQuery.matches && parentVisible && !document.hidden && manualPaused ? 'static' : 'paused')
+    }
+    if (notifyParent) postParent({
+      type: 'station:motion-state',
+      paused: manualPaused,
+      runtimeState: document.documentElement.dataset.runtimeState,
+      renderedFrames,
+      pixelRatio: context.renderer.getPixelRatio(),
+    })
+  }
+
+  function onVisibilityChange() {
+    sync()
+  }
+
+  function onMotionChange() {
+    manualPaused = motionQuery.matches
+    draw()
+    sync()
+  }
+
+  function onPageHide(event) {
+    if (!event.persisted) {
+      destroy()
+      return
+    }
+    window.cancelAnimationFrame(animationFrame)
+    animationFrame = 0
+    setState('paused')
+  }
+
+  function onPageShow(event) {
+    if (event.persisted) sync()
+  }
 
   function destroy() {
     if (destroyed) return
     destroyed = true
     window.cancelAnimationFrame(animationFrame)
     window.removeEventListener('message', onParentMessage)
+    window.removeEventListener('pagehide', onPageHide)
+    window.removeEventListener('pageshow', onPageShow)
+    document.removeEventListener('visibilitychange', onVisibilityChange)
+    motionQuery.removeEventListener('change', onMotionChange)
+    setState('paused')
     disposeScene(context.scene, context.renderer)
   }
 
   function onParentMessage(event) {
-    if (event.origin === window.location.origin && event.data?.type === 'station:destroy') {
-      destroy()
+    if (event.origin !== window.location.origin || event.source !== window.parent) return
+    if (event.data?.type === 'station:destroy') destroy()
+    else if (event.data?.type === 'station:visibility' && typeof event.data.visible === 'boolean') {
+      parentVisible = event.data.visible
+      sync()
+    } else if (event.data?.type === 'station:motion' && typeof event.data.paused === 'boolean') {
+      manualPaused = event.data.paused
+      sync()
+    } else if (event.data?.type === 'station:reset') {
+      context.rig.targetTheta = 0.55
+      context.rig.targetPhi = 1.25
+      context.rig.targetRadius = context.homeRadius || 15
+      draw()
     }
   }
 
   function loop(time) {
-    renderStation(context, time)
+    animationFrame = 0
+    if (!canAnimate()) return
+    const delta = lastTime ? time - lastTime : 0
+    const frameDuration = compactDevice ? 1000 / 30 : 1000 / 60
+    if (!lastTime || delta >= frameDuration - 1) {
+      const seconds = Math.min(delta * 0.001, 0.05)
+      elapsed += seconds * 1000
+      renderStation(context, elapsed, seconds)
+      renderedFrames += 1
+      lastTime = time
+      if (time - lastDiagnosticTime >= 1000) {
+        document.documentElement.dataset.renderedFrames = String(renderedFrames)
+        lastDiagnosticTime = time
+      }
+    }
     animationFrame = window.requestAnimationFrame(loop)
   }
 
   canvas.addEventListener('webglcontextlost', event => {
     event.preventDefault()
+    contextLost = true
     window.cancelAnimationFrame(animationFrame)
     document.body.classList.remove('scene-ready')
+    document.documentElement.dataset.sceneReady = 'false'
+    setState('error')
+    postParent({ type: 'station:error' })
   })
   canvas.addEventListener('webglcontextrestored', () => window.location.reload())
   window.addEventListener('message', onParentMessage)
-  window.addEventListener('pagehide', destroy, { once: true })
+  window.addEventListener('pagehide', onPageHide)
+  window.addEventListener('pageshow', onPageShow)
+  document.addEventListener('visibilitychange', onVisibilityChange)
+  motionQuery.addEventListener('change', onMotionChange)
 
   return {
     destroy,
-    start: () => {
-      animationFrame = window.requestAnimationFrame(loop)
-    },
+    draw,
+    // The parent resends its chosen paused state after station:ready. Avoid
+    // overwriting that choice with the child's initial system preference.
+    start: () => sync(false),
+    isAnimating: canAnimate,
   }
 }
 
-function initScene() {
+async function initScene() {
   if (!canvas) throw new Error('Station canvas element is missing')
-  const context = createSceneContext()
-
-  const renderOnce = () => {
-    if (motionQuery.matches) renderStation(context, 0)
+  reportProgress('structure', '搭建驿站空间')
+  await yieldToMain()
+  const buildStarted = performance.now()
+  const context = await createSceneContext()
+  timings.buildMs = performance.now() - buildStarted
+  resizeStation(context, false)
+  reportProgress('render', '准备光照与第一帧画面')
+  await yieldToMain()
+  const shaderStarted = performance.now()
+  try {
+    await context.renderer.compileAsync(context.scene, context.camera)
+  } catch (error) {
+    disposeScene(context.scene, context.renderer)
+    throw error
   }
-
+  timings.shaderMs = performance.now() - shaderStarted
+  // Bind controls only once initialization is complete. Parent messages sent
+  // during startup cannot accidentally start a second render while compiling.
+  const runtime = createRuntime(context)
+  const renderOnce = () => {
+    if (!runtime.isAnimating()) runtime.draw()
+  }
   bindPointerControls(context, renderOnce)
   bindZoomAndFocus(context, renderOnce)
   bindKeyboardControls(context, renderOnce)
+  window.addEventListener('resize', () => {
+    resizeStation(context, false)
+    runtime.draw()
+  })
+  resizeStation(context, false)
+  const frameStarted = performance.now()
+  runtime.draw(true)
+  timings.firstFrameMs = performance.now() - frameStarted
+  runtime.start()
 
-  const runtime = createRuntime(context)
-  window.addEventListener('resize', () => resizeStation(context))
-  resizeStation(context)
-
-  if (motionQuery.matches) {
-    renderStation(context, 0)
-  } else {
-    runtime.start()
-  }
-
+  timings.bootMs = performance.now() - bootStarted
+  timings.totalMs = performance.now()
+  Object.keys(timings).forEach(key => { timings[key] = Math.round(timings[key]) })
+  document.documentElement.dataset.readyMs = String(timings.totalMs)
+  document.documentElement.dataset.startupTimings = JSON.stringify(timings)
   document.documentElement.dataset.sceneReady = 'true'
   document.body.classList.add('scene-ready')
+  if (window.parent !== window) {
+    window.parent.postMessage({
+      type: 'station:ready',
+      pixelRatio: context.renderer.getPixelRatio(),
+      shadows: context.renderer.shadowMap.enabled,
+      compact: compactDevice,
+      drawCalls: context.renderer.info.render.calls,
+      shaderPrograms: context.renderer.info.programs.length,
+      triangles: context.renderer.info.render.triangles,
+      timings,
+    }, window.location.origin)
+  }
 }
 
-try {
-  initScene()
-} catch (error) {
+async function bootStation() {
+  reportProgress('engine', '加载三维引擎与场景资源')
+  const engineStarted = performance.now()
+  const [engine, batching] = await Promise.all([
+    import('./vendor/three.module.min.js'),
+    import('./static-batch.js'),
+  ])
+  THREE = engine
+  batchStaticMeshes = batching.batchStaticMeshes
+  timings.engineMs = performance.now() - engineStarted
+  await initScene()
+}
+
+bootStation().catch(error => {
   console.error('Failed to init 3D station scene:', error)
   document.documentElement.dataset.sceneReady = 'false'
+  document.documentElement.dataset.runtimeState = 'error'
+  if (window.parent !== window) window.parent.postMessage({ type: 'station:error' }, window.location.origin)
   if (fallbackTitle) fallbackTitle.textContent = 'Vue · Three.js · IoT · AI'
-}
+  const description = document.querySelector('.fallback-card p')
+  if (description) description.textContent = '三维场景暂不可用，页面内容仍可正常浏览'
+})
