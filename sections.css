@@ -14,7 +14,7 @@
 .project-card:hover { background: var(--surface); border-color: var(--line-strong); }
 .project-card-large { grid-column: 1 / -1; grid-template-columns: 28px minmax(0, 1fr) auto; min-height: 220px; background: linear-gradient(115deg, var(--surface), var(--bg-soft)); }
 .project-card:last-child { grid-column: 1 / -1; }
-.project-index { position: relative; z-index: 1; padding-top: 6px; color: var(--cyan); font-size: 12px; }
+.project-index { position: relative; z-index: 1; display: grid; place-items: center; width: 28px; height: 28px; margin-top: 1px; color: var(--cyan); font-size: 11px; letter-spacing: 0; background: rgba(125, 211, 252, .06); border: 1px solid var(--line-strong); border-radius: 8px; }
 .project-content { position: relative; z-index: 1; min-width: 0; }
 .project-title-line { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px 14px; }
 .project-title-line h3 { margin: 0; font-size: clamp(18px, 1.2vw, 28px); font-weight: 500; line-height: 1.6; letter-spacing: -.025em; text-wrap: balance; }

@@ -126,39 +126,39 @@ body {
   font-size: 0.85rem;
 }
 
-.scene-label {
+.station-hud {
   position: absolute;
-  z-index: 2;
-  color: rgba(255, 255, 255, 0.45);
-  pointer-events: none;
-  font-weight: 500;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 3;
   display: flex;
   align-items: center;
-  gap: 8px;
+  padding: 22px 28px;
+  pointer-events: none;
 }
 
-.scene-label::before {
-  content: "";
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-cyan);
-  box-shadow: 0 0 8px var(--accent-cyan);
+body.embedded .station-hud {
+  display: none;
 }
 
-.scene-label-top {
-  top: 24px;
-  right: 28px;
+.hud-back {
+  pointer-events: auto;
+  padding: 8px 16px;
+  color: rgba(241, 245, 249, 0.78);
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  background: rgba(13, 17, 26, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: color 160ms ease, border-color 160ms ease;
 }
 
-.scene-label-bottom {
-  right: 28px;
-  bottom: 24px;
-}
-
-@media (max-width: 720px) {
-  .scene-label-bottom {
-    display: none;
-  }
+.hud-back:hover,
+.hud-back:focus-visible {
+  color: #fff;
+  border-color: rgba(56, 189, 248, 0.5);
 }

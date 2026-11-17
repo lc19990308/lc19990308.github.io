@@ -2618,6 +2618,7 @@ async function initScene() {
   document.documentElement.dataset.sceneReady = 'true'
   document.body.classList.add('scene-ready')
   if (window.parent !== window) {
+    document.body.classList.add('embedded')
     window.parent.postMessage({
       type: 'station:ready',
       pixelRatio: context.renderer.getPixelRatio(),
